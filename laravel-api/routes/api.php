@@ -11,3 +11,7 @@ Route::get('/user', function (Request $request) {
 Route::get('/users', function (Request $request) {
     return  User::whereNot('id', $request->user()->id)->get();
 })->middleware('auth:sanctum');
+
+Route::get('/users/{user}', function (User $user) {
+    return $user;
+})->middleware('auth:sanctum');
