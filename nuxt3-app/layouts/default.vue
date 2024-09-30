@@ -4,11 +4,11 @@ const logoutUser = () => logout();
 </script>
 
 <template>
-    <div class="h-screen">
-        <nav class="bg-gray-800 text-white p-4">
-            <div class="container mx-auto flex justify-between items-center">
+    <div class="min-h-screen bg-gray-100">
+        <nav class="p-4 text-white bg-gray-800">
+            <div class="container flex items-center justify-between mx-auto">
                 <div>
-                    <NuxtLink to="/" class="font-bold text-xl">Home</NuxtLink>
+                    <NuxtLink to="/" class="text-xl font-bold">Home</NuxtLink>
                 </div>
                 <div>
                     <template v-if="!isLoggedIn">
