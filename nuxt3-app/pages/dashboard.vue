@@ -7,7 +7,6 @@ definePageMeta({
     middleware: ['$auth'],
 });
 
-
 const { data: users } = await useAsyncData(
     'users', () => useSanctumFetch('/api/users')
 )
