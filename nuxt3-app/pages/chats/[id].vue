@@ -11,31 +11,18 @@ const route = useRoute();
 const userID = route.params.id;
 const { user: currentUser } = useSanctum<User>();
 
-interface ChatMessage {
-    id: number;
-    sender_id: number;
-    receiver_id: number;
-    text: string;
-}
 
 const { data: user } = await useAsyncData(
     `user-${userID}`, () => useSanctumFetch<User>(`/api/users/${userID}`)
 )
 
-const messages = ref<ChatMessage[]>([
+const { data: messages } = useAsyncData(
+    `messages-${userID}`,
+    () => useSanctumFetch<ChatMessage[]>(`/api/messages/${userID}`),
     {
-        id: 1,
-        sender_id: 1,
-        receiver_id: 2,
-        text: "Hello"
-    },
-    {
-        id: 1,
-        sender_id: 2,
-        receiver_id: 1,
-        text: "Hi, How are you?"
-    },
-])
+        default: (): ChatMessage[] => []
+    }
+)
 
 
 watch(
@@ -52,15 +39,15 @@ const messagesContainer = useTemplateRef<HTMLDivElement>('messagesContainer');
 
 const sendMessage = async () => {
     if (!newMessage.value.trim()) {
-        return
+        return;
     }
 
-    messages.value.push({
-        id: 1,
-        sender_id: 1,
-        receiver_id: 2,
-        text: newMessage.value
+    const messageResponse = await useSanctumFetch<ChatMessage>(`/api/messages/${userID}`, {
+        method: "post",
+        body: { message: newMessage.value }
     });
+
+    messages.value.push(messageResponse);
     newMessage.value = "";
 };
 
