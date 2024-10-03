@@ -41,7 +41,7 @@ const submitForm = async () => {
             <form @submit.prevent="submitForm">
                 <div class="flex flex-col space-y-1">
                     <label for="email" class="text-sm font-medium">Email</label>
-                    <input id="email" type="email" v-model="form.email"
+                    <input id="email" type="email" v-model="form.email" autocomplete="off"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" />
                     <span class="text-sm text-red-600" v-if="errors.email">
                         {{ errors.email[0] }}
