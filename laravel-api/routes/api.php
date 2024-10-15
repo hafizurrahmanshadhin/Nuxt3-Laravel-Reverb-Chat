@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\MessageSent;
 use App\Models\ChatMessage;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -43,6 +44,8 @@ Route::post('/messages/{user}', function (User $user, Request $request) {
         'receiver_id' => $user->id,
         'text' => $request->message
     ]);
+
+    broadcast(new MessageSent($message));
 
     return $message;
 });
