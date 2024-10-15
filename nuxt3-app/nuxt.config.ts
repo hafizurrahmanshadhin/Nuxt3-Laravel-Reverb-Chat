@@ -7,6 +7,17 @@ export default defineNuxtConfig({
     host: process.env.NUXT_DEV_SERVER_HOST,
   },
 
+  runtimeConfig: {
+    public: {
+      REVERB_APP_ID: process.env.NUXT_PUBLIC_REVERB_APP_ID,
+      REVERB_APP_KEY: process.env.NUXT_PUBLIC_REVERB_APP_KEY,
+      REVERB_APP_SECRET: process.env.NUXT_PUBLIC_REVERB_APP_SECRET,
+      REVERB_HOST: process.env.NUXT_PUBLIC_REVERB_HOST,
+      REVERB_PORT: process.env.NUXT_PUBLIC_REVERB_PORT,
+      REVERB_SCHEME: process.env.NUXT_PUBLIC_REVERB_SCHEME,
+    },
+  },
+
   css: ["~/assets/css/main.css"],
 
   postcss: {
