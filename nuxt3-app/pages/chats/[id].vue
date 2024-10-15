@@ -63,8 +63,41 @@ function messageContainerScrollToBottom() {
     })
 }
 
+const { $echo } = useNuxtApp();
+const isUserTyping = ref(false);
+const isUserTypingTimer = ref<NodeJS.Timeout | null>(null);
+
+const sendTypingEvent = () => {
+    if (!user.value || !currentUser.value) {
+        return;
+    }
+
+    $echo.private(`chat.${user.value.id}`).whisper("typing", {
+        userID: currentUser.value.id
+    })
+}
+
+
 onMounted(() => {
     messageContainerScrollToBottom();
+
+    if (currentUser.value) {
+        $echo.private(`chat.${currentUser.value.id}`)
+            .listen('MessageSent', (response: { message: ChatMessage }) => {
+                messages.value.push(response.message);
+            })
+            .listenForWhisper("typing", (response: { userID: number }) => {
+                isUserTyping.value = response.userID === user.value?.id;
+
+                if (isUserTypingTimer.value) {
+                    clearTimeout(isUserTypingTimer.value);
+                }
+
+                isUserTypingTimer.value = setTimeout(() => {
+                    isUserTyping.value = false;
+                }, 1000)
+            })
+    }
 })
 </script>
 
@@ -96,11 +129,12 @@ onMounted(() => {
                     </div>
 
                     <div class="flex-shrink-0">
-                        <!-- <span class="text-gray-500">
-                            Harish is typing...
-                        </span> -->
+                        <span v-if="user && isUserTyping" class="text-gray-500">
+                            {{ user.name }} is typing...
+                        </span>
                         <div class="flex items-center justify-between w-full p-4 border-t border-gray-200">
-                            <input type="text" v-model="newMessage" @keyup.enter="sendMessage"
+                            <input type="text" v-model="newMessage" @keydown="sendTypingEvent"
+                                @keyup.enter="sendMessage"
                                 class="w-full p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Type a message..." />
                             <button @click.prevent="sendMessage"
